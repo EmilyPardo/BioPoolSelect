@@ -1,3 +1,5 @@
+from cgitb import enable
+
 import wx
 import pandas as pd
 import wx.lib.agw.foldpanelbar as fpb
@@ -21,7 +23,7 @@ class MyPanel(scrolled.ScrolledPanel):
     m_pnl.SetBackgroundColour(wx.Colour(255, 255, 255))
     self.pnl = m_pnl
 
-    btnAccept = wx.Button(m_pnl, label='Make new file')
+    btnAccept = wx.Button(m_pnl, label='Save new file')
     btnAccept.Bind(wx.EVT_BUTTON, self.on_press)
     self.boxSizer.Add(btnAccept, 20, wx.LEFT, 5)
 
@@ -44,6 +46,9 @@ class MyPanel(scrolled.ScrolledPanel):
     for i in range(int(countCol)):
       pos_y += 20
       cb = wx.CheckBox(m_pnl, id=i, label=df.columns[i], pos=(20, pos_y))
+
+      cb.SetFocus()
+
 
     self.Bind(wx.EVT_CHECKBOX, self.onChecked)
 
