@@ -1,14 +1,9 @@
-from cgitb import enable
-
 import wx
 import pandas as pd
 import wx.lib.agw.foldpanelbar as fpb
 import wx.lib.scrolledpanel as scrolled
-from PyQt5.QtWidgets import *
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
 
+cblist = []
 class MyPanel(scrolled.ScrolledPanel):
 
   def __init__(self, parent):
@@ -46,9 +41,7 @@ class MyPanel(scrolled.ScrolledPanel):
     for i in range(int(countCol)):
       pos_y += 20
       cb = wx.CheckBox(m_pnl, id=i, label=df.columns[i], pos=(20, pos_y))
-
       cb.SetFocus()
-
 
     self.Bind(wx.EVT_CHECKBOX, self.onChecked)
 
@@ -56,16 +49,24 @@ class MyPanel(scrolled.ScrolledPanel):
     self.pnl = m_pnl
     self.SetSizer(self.boxSizer)
 
+
+
   def onChecked(self, e):
     cb = e.GetEventObject()
     print(cb.GetLabel(), ' is clicked', cb.GetValue())
+    cblist.append(cb.GetLabel())
 
-  def OnChecked(self, event):
-    clicked = event.GetEventObject()
-    print(clicked.GetName())
-    print(event.IsChecked())
-
+  #BUTTON ACTION FOR SAVING THE NEW FILE!!!!!!!!!!!!!!!!!!!1
   def on_press(self, event):
+
+    #children = self.boxSizer.GetChildren()
+    #for child in children:
+      #widget = child.GetWindow()
+      #print(widget)
+    print(cblist)
+    #column_names = ['Courses', 'Fee', 'Discount']
+    #df.to_csv("c:/tmp/courses.csv", index=False, columns=column_names)
+
     print("ready!")
 
 class MyApp(wx.App):
@@ -81,8 +82,9 @@ class InsertFrame(wx.Frame):
 
     wx.Frame.__init__(self, None, title="Choose columns")
     panel = MyPanel(self)
+    #Tozi checkbox raboti pri panel pnl:
     #pnl = wx.Panel(self)
-   #self.cb3 = wx.CheckBox(pnl, label='Value C', pos=(10, 70))
+    #self.cb3 = wx.CheckBox(pnl, label='Value C', pos=(10, 70))
     #if self.cb3.IsEnabled():
       #print("YES")
     self.Show(True)
