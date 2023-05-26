@@ -1,3 +1,4 @@
+import pandas
 import wx
 import pandas as pd
 import wx.lib.agw.foldpanelbar as fpb
@@ -66,8 +67,13 @@ class MyPanel(scrolled.ScrolledPanel):
     print(cblist)
     #column_names = ['Courses', 'Fee', 'Discount']
     #df.to_csv("c:/tmp/courses.csv", index=False, columns=column_names)
+    rdr = pd.read_csv('1_AD_pool.snp.annot.AD.DP.csv', chunksize=200000,  on_bad_lines='skip')
+    for data in rdr:
+      pprint(data)
+    #tova ne raboti:
+    #df2 = pandas.DataFrame(rdr)
+    #df2.to_csv("output.csv", index=False, columns=cblist, chunksize=200000)
 
-    print("ready!")
 
 class MyApp(wx.App):
 
