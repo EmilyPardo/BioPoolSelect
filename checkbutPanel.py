@@ -1,10 +1,17 @@
-import pandas
+import os
 import wx
 import pandas as pd
 import wx.lib.agw.foldpanelbar as fpb
 import wx.lib.scrolledpanel as scrolled
+from pprint import pprint
 
 cblist = []
+
+def GetFileName():
+  file2 = open('choosenFile.txt', 'r')
+  fName = file2.read()
+  file2.close()
+  return fName
 class MyPanel(scrolled.ScrolledPanel):
 
   def __init__(self, parent):
@@ -14,12 +21,16 @@ class MyPanel(scrolled.ScrolledPanel):
 
     self.SetupScrolling()
     self.boxSizer = wx.BoxSizer(wx.VERTICAL)
-    m_pnl = fpb.FoldPanelBar(self, wx.ID_ANY, wx.DefaultPosition, (400, 1200),
+    m_pnl = fpb.FoldPanelBar(self, wx.ID_ANY, wx.DefaultPosition, (500, 1250),
                              fpb.FPB_VERTICAL)
     m_pnl.SetBackgroundColour(wx.Colour(255, 255, 255))
     self.pnl = m_pnl
 
-    btnAccept = wx.Button(m_pnl, label='Save new file')
+    font2 = wx.Font(11, family=wx.FONTFAMILY_SWISS, style=0, weight=100,
+                    underline=False, faceName="", encoding=wx.FONTENCODING_DEFAULT)
+    btnAccept = wx.Button(m_pnl, label='Save new file', size =(200, 40))
+    btnAccept.SetFont(font2)
+    btnAccept.SetBackgroundColour(wx.Colour(194,24,7))
     btnAccept.Bind(wx.EVT_BUTTON, self.on_press)
     self.boxSizer.Add(btnAccept, 20, wx.LEFT, 5)
 
@@ -29,9 +40,7 @@ class MyPanel(scrolled.ScrolledPanel):
 
 
     # chetene na imeto na faila
-    file2 = open('choosenFile.txt', 'r')
-    fName = file2.read()
-    file2.close()
+    fName = GetFileName()
     self.text = wx.StaticText(self, -1, fName)
 
     df = pd.read_csv(f'{fName}', nrows=0)
@@ -50,30 +59,38 @@ class MyPanel(scrolled.ScrolledPanel):
     self.pnl = m_pnl
     self.SetSizer(self.boxSizer)
 
-
-
   def onChecked(self, e):
     cb = e.GetEventObject()
-    print(cb.GetLabel(), ' is clicked', cb.GetValue())
+    #print(cb.GetLabel(), ' is clicked', cb.GetValue())
     cblist.append(cb.GetLabel())
 
   #BUTTON ACTION FOR SAVING THE NEW FILE!!!!!!!!!!!!!!!!!!!1
   def on_press(self, event):
 
-    #children = self.boxSizer.GetChildren()
-    #for child in children:
-      #widget = child.GetWindow()
-      #print(widget)
-    print(cblist)
-    #column_names = ['Courses', 'Fee', 'Discount']
-    #df.to_csv("c:/tmp/courses.csv", index=False, columns=column_names)
-    rdr = pd.read_csv('1_AD_pool.snp.annot.AD.DP.csv', chunksize=200000,  on_bad_lines='skip')
-    for data in rdr:
-      pprint(data)
-    #tova ne raboti:
-    #df2 = pandas.DataFrame(rdr)
-    #df2.to_csv("output.csv", index=False, columns=cblist, chunksize=200000)
+    fName = GetFileName()
+    #print(cblist)
+    with pd.read_csv(fName,  chunksize=500000, on_bad_lines='skip', usecols=cblist) as reader:
+      reader
 
+      header = True
+      i=0
+      for chunk in reader:
+        i++
+        #chunk.to_csv("new_file_" + fName, header=header, columns=cblist, mode='a')  # mode = a means appending
+        chunk.to_csv("new_file_"+i+"_" + fName, header=header, columns=cblist)
+        #header = False  #header is needed only for the first chunk
+
+    #rdr = pd.read_csv('1_AD_pool.snp.annot.AD.DP.csv', chunksize=200000,  on_bad_lines='skip', usecols = cblist)
+    #for data in rdr:
+     # pprint(data)
+
+   ####*************** THE ORiGINAL  ****
+  '''header = True
+  for chunk in chunks:
+    chunk.to_csv(os.path.join(folder, new_folder, "new_file_" + filename),
+                 header=header, cols=[['TIME', 'STUFF']], mode='a')
+
+    header = False'''
 
 class MyApp(wx.App):
 
@@ -94,8 +111,6 @@ class InsertFrame(wx.Frame):
     #if self.cb3.IsEnabled():
       #print("YES")
     self.Show(True)
-
-
 
 #if __name__ == "__main__":
 app = wx.App(False)
