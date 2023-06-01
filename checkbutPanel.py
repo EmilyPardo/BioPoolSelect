@@ -75,9 +75,9 @@ class MyPanel(scrolled.ScrolledPanel):
       header = True
       i=0
       for chunk in reader:
-        i++
-        #chunk.to_csv("new_file_" + fName, header=header, columns=cblist, mode='a')  # mode = a means appending
-        chunk.to_csv("new_file_"+i+"_" + fName, header=header, columns=cblist)
+        i=i+1
+        chunk.to_csv("new_file_" + fName, header=header, columns=cblist, mode='a')  # mode = a means appending
+        #chunk.to_csv("new_file_"+str(i)+"_" + fName, header=header, columns=cblist)
         #header = False  #header is needed only for the first chunk
 
     #rdr = pd.read_csv('1_AD_pool.snp.annot.AD.DP.csv', chunksize=200000,  on_bad_lines='skip', usecols = cblist)
