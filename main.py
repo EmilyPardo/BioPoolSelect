@@ -48,6 +48,8 @@ class MyFrame(wx.Frame):
         else:
             # chete samo colonite
             df = pd.read_csv(f'{value}', nrows=0)
+            #df = pd.read_csv(f'{value}', delimiter=r'[;,]', engine='python', nrows=0)
+
             print(df.columns)
             # spisuk s kolonite
             listColumns = list(df.columns)
@@ -59,7 +61,7 @@ class MyFrame(wx.Frame):
             file1.close()
             self.dlg =InsertFrame()
            # self.dlg.text.SetLabel(value)
-           # print(df.columns[0])
+            print(df.columns[0])
 
 if __name__ == '__main__':
     app = wx.App()

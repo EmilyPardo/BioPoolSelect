@@ -42,12 +42,13 @@ class MyPanel(scrolled.ScrolledPanel):
     # chetene na imeto na faila
     fName = GetFileName()
     self.text = wx.StaticText(self, -1, fName)
-
     df = pd.read_csv(f'{fName}', nrows=0)
+    #df = pd.read_csv(f'{fName}', nrows=0,  delimiter=r'[;,]', engine='python')
     listColumns = list(df.columns)
     countCol = len(listColumns)
 
     pos_y = 10
+
     for i in range(int(countCol)):
       pos_y += 20
       cb = wx.CheckBox(m_pnl, id=i, label=df.columns[i], pos=(20, pos_y))
@@ -68,15 +69,15 @@ class MyPanel(scrolled.ScrolledPanel):
   def on_press(self, event):
 
     fName = GetFileName()
-    #print(cblist)
-    with pd.read_csv(fName,  chunksize=500000, on_bad_lines='skip', usecols=cblist) as reader:
+    print(cblist)
+    with pd.read_csv(fName,  chunksize=100000, on_bad_lines='skip', usecols=cblist, dtype='unicode', index_col=False) as reader:
       reader
+      #header = True
 
-      header = True
-      i=0
       for chunk in reader:
-        i=i+1
-        chunk.to_csv("new_file_" + fName, header=header, columns=cblist, mode='a')  # mode = a means appending
+        chunk.to_csv("new_file_" + fName, columns=cblist, mode='a')
+        #chunk.to_csv("new_file_" + fName, header=header, columns=cblist, mode='a')  # mode = a means appending
+
         #chunk.to_csv("new_file_"+str(i)+"_" + fName, header=header, columns=cblist)
         #header = False  #header is needed only for the first chunk
 
@@ -112,7 +113,7 @@ class InsertFrame(wx.Frame):
       #print("YES")
     self.Show(True)
 
-#if __name__ == "__main__":
-app = wx.App(False)
-frame = InsertFrame()
-app.MainLoop()
+if __name__ == "__main__":
+  app = wx.App(False)
+  frame = InsertFrame()
+  app.MainLoop()
