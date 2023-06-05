@@ -69,15 +69,28 @@ class MyPanel(scrolled.ScrolledPanel):
   def on_press(self, event):
 
     fName = GetFileName()
-    print(cblist)
-    with pd.read_csv(fName,  chunksize=100000, on_bad_lines='skip', usecols=cblist, dtype='unicode', index_col=False) as reader:
+
+#******************************** adding new header
+
+    #df_firstn = pd.read_csv(fName, nrows=0)
+    #print("First row:  ")
+    #print(df_firstn.head())
+
+
+    #cblist = cblist.remove("AD;DP")
+    #newElementsList = ["AD", "AD2", "DP"]
+    #cblist = cblist.extend(newElementsList)
+
+    # ********************************
+    with pd.read_csv(fName,  chunksize=100000, on_bad_lines='warn', usecols=cblist, index_col=False, keep_default_na=False) as reader:
       reader
       #header = True
 
       for chunk in reader:
-        chunk.to_csv("new_file_" + fName, columns=cblist, mode='a')
-        #chunk.to_csv("new_file_" + fName, header=header, columns=cblist, mode='a')  # mode = a means appending
+        chunk.to_csv("new_file_" + fName, columns=cblist, mode='a', index=False, na_rep='')
 
+        #creting multiple files
+        #chunk.to_csv("new_file_" + fName, header=header, columns=cblist, mode='a')  # mode = a means appendin
         #chunk.to_csv("new_file_"+str(i)+"_" + fName, header=header, columns=cblist)
         #header = False  #header is needed only for the first chunk
 
